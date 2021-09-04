@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MeUpdateRequest extends FormRequest
+class PostCommentStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,8 @@ class MeUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'password' => 'string|min:6|max:15',            
+            'body' => 'required|string',
+            
         ];
     }
 }

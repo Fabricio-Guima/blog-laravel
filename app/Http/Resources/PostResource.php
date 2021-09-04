@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+
 class PostResource extends JsonResource
 {
     /**
@@ -19,6 +20,10 @@ class PostResource extends JsonResource
             'title' =>(string)$this->title,
             'body' =>(string)$this->body,
             'created_at' =>(string)$this->created_at,
+
+            'comments' => PostCommentResource::collection($this->whenLoaded('comments'))
+
+           
         ];
     }
 }

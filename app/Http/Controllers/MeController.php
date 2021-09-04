@@ -24,12 +24,7 @@ class MeController extends Controller
     public function update(MeUpdateRequest $request){
         
         $input = $request->validated();
-
-        if(!empty($input['email']) && User::where('email', $input['email'])->exists() ) {
-
-        }
-
-
+       
         $user =  (new UserService)->update(auth()->user(), $input);
 
         return new UserResource($user);

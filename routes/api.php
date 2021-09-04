@@ -1,35 +1,63 @@
 <?php
 
-Route::group([
-    'middleware' => ['auth:sanctum'],
-    'namespace' => 'Api'
-], function(){
-    
-    Route::get('/me', 'Auth\AuthClientController@me');
-    Route::post('/logout', 'Auth\AuthClientController@logout');
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::prefix('v1')->group(function(){
+
+    Route::get('/', 'UserController@index');
+    Route::post('/login', 'AuthController@login');
+    Route::post('/register', 'AuthController@register');
+
+    Route::prefix( 'me')->group(function (){
+        Route::get('/', 'MeController@me');
+
+        //atualizar dados do user
+        Route::put('/', 'MeController@update');
+    });
+
+    Route::prefix( 'posts')->group(function (){
+
+        Route::get('/public', 'PostController@indexPublic');
+        Route::get('/', 'PostController@index');
+
+        Route::get('/{post}', 'PostController@show');
+        Route::get('/{post}/public', 'PostController@showPublic');
+
+        Route::post('/', 'PostController@store');
+        Route::put('/{post}', 'PostController@update');
+        Route::delete('/{post}', 'PostController@destroy');
+        
+        //add comentário no post
+        Route::post('/{post}/comments', 'PostController@addComment');        
+       
+    });
+
+    Route::prefix('post-comments')->group(function(){
+
+        Route::get('/{postComment}','PostCommentController@allCommentsByPost');   
+        Route::get('/{postComment}/public','PostCommentController@allCommentsByPostPublic');  
+
+        Route::get('/{postComment}/show','PostCommentController@show');
+        Route::get('/','PostCommentController@allCommentsByUser');     
+        Route::put('{postComment}', 'PostCommentController@update');
+        Route::delete('{postComment}', 'PostCommentController@destroy');
+    });
 });
 
 
 
-Route::group([
-    'prefix' => 'v1',
-    'namespace' => 'Api'
-], function () {
-    Route::get('/tenants/{uuid}', 'TenantApiController@show');
-    Route::get('/tenants', 'TenantApiController@index');
-    
-    Route::get('/categories/{identify}', 'CategoryApiController@show');
-    Route::get('/categories', 'CategoryApiController@categoriesByTenant');
-    
-    Route::get('/tables/{identify}', 'TableApiController@show');
-    Route::get('/tables', 'TableApiController@tablesByTenant');
-    
-    Route::get('/products/{identify}', 'ProductApiController@show');
-    Route::get('/products', 'ProductApiController@productsByTenant');
-    
-    Route::post('/client', 'Auth\RegisterController@store');
-    Route::post('/sanctum/token', 'Auth\AuthClientController@auth');
-    
-    Route::post('/orders', 'OrderApiController@store');
-    Route::get('/orders/{identify}', 'OrderApiController@show');
-});
+
+
+
